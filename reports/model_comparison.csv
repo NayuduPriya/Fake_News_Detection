@@ -1,0 +1,6 @@
+Model,Accuracy,Precision,Recall,F1 Score,ROC-AUC
+Support Vector Machine (SVM),0.9722,0.9757,0.9734,0.9745,0.9964
+Logistic Regression,0.9632,0.9649,0.968,0.9664,0.9938
+Random Forest,0.9277,0.9154,0.9562,0.9353,0.9829
+Naive Bayes,0.8894,0.9185,0.8756,0.8965,0.9568
+Gradient Boosting,0.8122,0.77,0.9365,0.8451,0.904

@@ -1,0 +1,32 @@
+# Python Bytecode and Caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Virtual Environments
+.venv/
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Large Raw Datasets (WELFake_Dataset.csv is 233MB, exceeding GitHub's 100MB file limit)
+# The dataset can be downloaded using python scripts or directly from Kaggle/HuggingFace.
+data/WELFake_Dataset.csv
+data/*.parquet
+
+# Streamlit Local Runtime
+.streamlit/secrets.toml
