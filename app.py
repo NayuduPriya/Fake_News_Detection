@@ -1,11 +1,9 @@
 """
 Streamlit Web Application: Fake News Detection System Using Machine Learning
 ============================================================================
-An academic, presentation-friendly web application for B.Tech project review:
-- 4 Streamlined Navigation Sections: Home, Fake News Detection, Model Insights, About & Dataset
-- Real-time prediction with calibrated confidence scores and token explainability
-- Empirical benchmark metrics across 5 machine learning models
-- Publication-quality diagnostic plots: Confusion Matrix, ROC Curves, Feature Importance
+An academic, presentation-friendly web application with EXACTLY TWO sections:
+1. Fake News Detection (Live prediction, confidence score & token explainability)
+2. Model Insights (Model comparison table & 4 diagnostic visualizations)
 """
 
 import os
@@ -23,7 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from src.data_preprocessing import clean_text
 from src.prediction import NewsPredictor, DISCLAIMER_TEXT
 
-# Configure Streamlit page layout and appearance
+# Configure Streamlit page layout and dark navy appearance
 st.set_page_config(
     page_title="Fake News Detection System",
     page_icon="📰",
@@ -31,7 +29,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS styling for a dark navy academic UI
+# Custom CSS styling for a dark navy professional UI with teal/cyan accents
 st.markdown("""
 <style>
     .main-header {
@@ -96,15 +94,6 @@ st.markdown("""
         border: 1px dashed #cbd5e1;
         margin-top: 15px;
     }
-    .tech-card {
-        background-color: #f1f5f9;
-        border-radius: 6px;
-        padding: 10px 14px;
-        text-align: center;
-        font-weight: 600;
-        color: #1e293b;
-        border: 1px solid #cbd5e1;
-    }
     .stButton>button {
         background-color: #1e3a8a;
         color: white;
@@ -115,7 +104,7 @@ st.markdown("""
         transition: all 0.2s;
     }
     .stButton>button:hover {
-        background-color: #1d4ed8;
+        background-color: #0d9488;
         color: white;
     }
 </style>
@@ -158,119 +147,30 @@ def load_dataset_summary():
     return None
 
 
-# Sidebar Navigation state management
-if "page" not in st.session_state:
-    st.session_state.page = "Home"
-
-def set_page(page_name):
-    st.session_state.page = page_name
-
+# Sidebar Navigation — EXACTLY TWO SECTIONS
 st.sidebar.markdown("## 🧭 Navigation")
-nav_selection = st.sidebar.radio(
+page = st.sidebar.radio(
     "Select Section",
-    ["Home", "Fake News Detection", "Model Insights", "About & Dataset"],
-    index=["Home", "Fake News Detection", "Model Insights", "About & Dataset"].index(st.session_state.page)
+    ["Fake News Detection", "Model Insights"],
+    index=0
 )
-
-if nav_selection != st.session_state.page:
-    st.session_state.page = nav_selection
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 🎓 B.Tech Project Review")
 st.sidebar.info(
     "**System:** Fake News Detection\n\n"
-    "**Dataset:** WELFake (72,134 rows)\n\n"
+    "**Corpus:** WELFake (72,134 rows)\n\n"
     "**Best Model:** SVM (97.45% F1)\n\n"
     "**Split:** Stratified 80/20"
 )
 
 
 # ==============================================================================
-# 1. HOME PAGE — Professional First Impression
+# 1. FAKE NEWS DETECTION — Main Section (Opens Directly Here)
 # ==============================================================================
-if st.session_state.page == "Home":
+if page == "Fake News Detection":
     st.markdown('<div class="main-header">FAKE NEWS DETECTION SYSTEM</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">NLP-Powered Machine Learning Classification for Automated Journalism Verification</div>', unsafe_allow_html=True)
-
-    col_btn, col_blank = st.columns([1, 3])
-    with col_btn:
-        if st.button("🔍 Detect News Now"):
-            set_page("Fake News Detection")
-            st.rerun()
-
-    st.markdown("---")
-
-    st.markdown("### 📌 Problem & System Overview")
-    st.write(
-        "Misinformation and clickbait articles pose significant threats to public trust and digital media integrity. "
-        "This project develops an automated text classification pipeline that standardizes raw headlines and articles using NLP, "
-        "transforms text into high-dimensional TF-IDF feature vectors, and evaluates five competitive machine learning classifiers "
-        "to accurately flag fake news."
-    )
-
-    st.markdown("### 🔄 End-to-End Project Workflow")
-    workflow_box = """
-    ```
-    WELFake Dataset (72,134) ➔ Text Preprocessing ➔ TF-IDF (40k dims) ➔ 5 ML Models ➔ Model Evaluation ➔ Prediction
-    ```
-    """
-    st.markdown(workflow_box)
-
-    st.markdown("### 📊 Key Project Statistics")
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown("""
-        <div class="metric-card">
-            <div class="metric-label">Dataset Size</div>
-            <div class="metric-value">72,134</div>
-            <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">WELFake Corpus</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with c2:
-        st.markdown("""
-        <div class="metric-card">
-            <div class="metric-label">Best Accuracy</div>
-            <div class="metric-value">97.22%</div>
-            <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">Support Vector Machine</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with c3:
-        st.markdown("""
-        <div class="metric-card">
-            <div class="metric-label">Best F1-Score</div>
-            <div class="metric-value">97.45%</div>
-            <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">Stratified Test Set</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with c4:
-        st.markdown("""
-        <div class="metric-card">
-            <div class="metric-label">Feature Dimension</div>
-            <div class="metric-value">40,000</div>
-            <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">TF-IDF Unigrams & Bigrams</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("### 🛠️ Technology Stack")
-    t1, t2, t3, t4, t5 = st.columns(5)
-    with t1:
-        st.markdown('<div class="tech-card">🐍 Python 3.10+</div>', unsafe_allow_html=True)
-    with t2:
-        st.markdown('<div class="tech-card">🐼 Pandas & NumPy</div>', unsafe_allow_html=True)
-    with t3:
-        st.markdown('<div class="tech-card">⚙️ Scikit-Learn</div>', unsafe_allow_html=True)
-    with t4:
-        st.markdown('<div class="tech-card">🔤 TF-IDF Vectorizer</div>', unsafe_allow_html=True)
-    with t5:
-        st.markdown('<div class="tech-card">👑 Streamlit App</div>', unsafe_allow_html=True)
-
-
-# ==============================================================================
-# 2. FAKE NEWS DETECTION — Main Feature
-# ==============================================================================
-elif st.session_state.page == "Fake News Detection":
-    st.markdown('<div class="main-header">FAKE NEWS DETECTION</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Paste a news headline and article body below to analyze its authenticity in real time.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">NLP-Powered Machine Learning Classification for Automated News Verification</div>', unsafe_allow_html=True)
 
     predictor, err = get_cached_predictor()
 
@@ -281,9 +181,9 @@ elif st.session_state.page == "Fake News Detection":
             f"Please run the training script first: `python train.py`"
         )
     else:
-        # Sample News Presets for Viva Demonstration
+        # Sample News Presets for Demonstration
         sample_options = {
-            "Select a pre-loaded sample news story for live demo...": {"title": "", "text": ""},
+            "Select a pre-loaded sample news story...": {"title": "", "text": ""},
             "Sample 1: Real News (U.S. Congressional Report)": {
                 "title": "U.S. Senate Approves Bipartisan Budget Resolution After Late-Night Vote",
                 "text": "WASHINGTON - The United States Senate approved a bipartisan budget resolution early Friday morning following extensive deliberations between party leaders. The measure passed with a 62-38 majority vote, sending the legislation to the House of Representatives for final consideration. Committee chairpersons praised the collaborative effort to maintain government funding through the fiscal quarter."
@@ -304,12 +204,12 @@ elif st.session_state.page == "Fake News Detection":
 
         col_sample, col_model = st.columns([3, 2])
         with col_sample:
-            selected_sample = st.selectbox("💡 Quick Demo Preset:", list(sample_options.keys()))
+            selected_sample = st.selectbox("💡 Demonstration Preset (Optional):", list(sample_options.keys()))
         with col_model:
             model_options = {
                 "Best Model (Support Vector Machine - 97.45% F1)": "models/best_model.pkl",
-                "Logistic Regression": "models/logistic_regression.pkl",
                 "Support Vector Machine (SVM)": "models/svm.pkl",
+                "Logistic Regression": "models/logistic_regression.pkl",
                 "Random Forest": "models/random_forest.pkl",
                 "Naive Bayes": "models/naive_bayes.pkl",
                 "Gradient Boosting": "models/gradient_boosting.pkl"
@@ -330,12 +230,12 @@ elif st.session_state.page == "Fake News Detection":
                 "News Article Body:",
                 value=default_text,
                 height=180,
-                placeholder="Paste full news article content here..."
+                placeholder="Paste full news article content here for linguistic analysis..."
             )
 
             col_btn, _ = st.columns([1, 4])
             with col_btn:
-                submit_btn = st.form_submit_button("⚡ Analyze News")
+                submit_btn = st.form_submit_button("Analyze News")
 
         if submit_btn:
             # Dynamically load selected model if changed
@@ -357,7 +257,7 @@ elif st.session_state.page == "Fake News Detection":
                 conf = res["confidence_percentage"]
                 model_used = res["model_used"]
 
-                st.markdown("### 📋 Prediction Results")
+                st.markdown("### 📋 Prediction Analysis")
 
                 if verdict == "REAL NEWS":
                     st.markdown(f"""
@@ -380,7 +280,7 @@ elif st.session_state.page == "Fake News Detection":
 
                 c_m1, c_m2, c_m3 = st.columns(3)
                 with c_m1:
-                    st.metric("Predicted Verdict", verdict)
+                    st.metric("Predicted Class", verdict)
                 with c_m2:
                     st.metric("Model Confidence Score", f"{conf:.1f}%")
                 with c_m3:
@@ -414,14 +314,50 @@ elif st.session_state.page == "Fake News Detection":
 
 
 # ==============================================================================
-# 3. MODEL INSIGHTS — Demonstrate the Technical Work
+# 2. MODEL INSIGHTS — Technical Demonstration
 # ==============================================================================
-elif st.session_state.page == "Model Insights":
-    st.markdown('<div class="main-header">MODEL INSIGHTS & BENCHMARKS</div>', unsafe_allow_html=True)
+elif page == "Model Insights":
+    st.markdown('<div class="main-header">MODEL INSIGHTS & TECHNICAL BENCHMARKS</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-header">Empirical evaluation metrics and diagnostic visualizations across five machine learning algorithms.</div>', unsafe_allow_html=True)
 
     comp_df = load_comparison_data()
     summary = load_dataset_summary()
+
+    if summary:
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Dataset Articles</div>
+                <div class="metric-value">72,134</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">WELFake Corpus</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with c2:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Training Set</div>
+                <div class="metric-value">50,884</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">80% Stratified Split</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with c3:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Testing Set</div>
+                <div class="metric-value">12,722</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">20% Stratified Split</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with c4:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">Feature Dimension</div>
+                <div class="metric-value">40,000</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-top:2px;">TF-IDF Unigrams & Bigrams</div>
+            </div>
+            """, unsafe_allow_html=True)
+        st.markdown("---")
 
     if comp_df is not None:
         best_name = comp_df.iloc[0]["Model"]
@@ -437,7 +373,7 @@ elif st.session_state.page == "Model Insights":
         st.dataframe(comp_df, use_container_width=True)
 
         st.markdown("---")
-        st.markdown("### 📊 Evaluation Visualizations")
+        st.markdown("### 📊 Diagnostic Visualizations")
 
         tab1, tab2, tab3, tab4 = st.tabs([
             "1. Model Performance Chart",
@@ -486,58 +422,3 @@ elif st.session_state.page == "Model Insights":
                 st.info("Run `python train.py` to generate feature explainability plots.")
     else:
         st.warning("Evaluation report not found. Run `python train.py` to execute evaluation pipeline.")
-
-
-# ==============================================================================
-# 4. ABOUT & DATASET — One Compact Section
-# ==============================================================================
-elif st.session_state.page == "About & Dataset":
-    st.markdown('<div class="main-header">ABOUT THE PROJECT & DATASET</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-header">Technical specs, dataset overview, and viva reference documentation.</div>', unsafe_allow_html=True)
-
-    with st.expander("📌 Problem Statement & Objectives", expanded=True):
-        st.markdown("""
-        - **Problem:** The rapid proliferation of digital misinformation and clickbait requires automated, interpretable text verification.
-        - **Objectives:** Build an end-to-end Machine Learning pipeline to preprocess news text, extract TF-IDF n-gram features, evaluate 5 classification algorithms, and select the optimal model.
-        """)
-
-    with st.expander("📊 WELFake Dataset Specifications", expanded=True):
-        col_info, col_pie = st.columns([3, 2])
-        with col_info:
-            st.markdown("""
-            - **Dataset:** WELFake – Fake and Real News Dataset
-            - **Source:** Kaggle ([Fake News Classification Dataset](https://www.kaggle.com/datasets/saurabhshahane/fake-news-classification))
-            - **Total Articles:** 72,134 records (63,606 clean non-duplicate records)
-            - **Target Variable (`label`):**
-                - `0` = Fake News (28,815 clean records / 37,106 raw)
-                - `1` = Real News (34,791 clean records / 35,028 raw)
-            - **Attributes:** `Serial Number`, `Title`, `Text`, `Label`
-            """)
-        with col_pie:
-            fig_p, ax_p = plt.subplots(figsize=(4, 4))
-            ax_p.pie([37106, 35028], labels=["Fake (0)\n37,106", "Real (1)\n35,028"], autopct="%1.1f%%",
-                     colors=["#dc2626", "#16a34a"], startangle=140, textprops={'weight': 'bold', 'fontsize': 10})
-            ax_p.axis("equal")
-            st.pyplot(fig_p)
-
-    with st.expander("⚙️ NLP Preprocessing & Feature Engineering"):
-        st.markdown("""
-        1. **Cleaning:** Lowercasing, HTML/URL stripping, regex punctuation removal.
-        2. **Normalization:** NLTK English stop-words filtering and Porter Stemmer with LRU caching.
-        3. **TF-IDF Vectorization:** `TfidfVectorizer(max_features=40000, ngram_range=(1,2), sublinear_tf=True)` fit strictly on training data.
-        """)
-
-    with st.expander("🤖 Machine Learning Algorithms Evaluated"):
-        st.markdown("""
-        1. **Logistic Regression:** Linear decision boundary with L-BFGS solver.
-        2. **Multinomial Naive Bayes:** Probabilistic classifier with Laplace smoothing ($\alpha=0.1$).
-        3. **Support Vector Machine (LinearSVC):** Convex max-margin hyperplane calibrated via `CalibratedClassifierCV`.
-        4. **Random Forest:** Bagged ensemble of decorrelated decision trees (`max_depth=35`).
-        5. **Gradient Boosting:** Sequential gradient-boosted trees (`n_estimators=50, max_depth=3`).
-        """)
-
-    with st.expander("⚠️ Project Limitations & Future Enhancements"):
-        st.markdown("""
-        - **Limitations:** Predictions reflect vocabulary correlations in the WELFake corpus; text-only models cannot verify real-world facts dynamically.
-        - **Future Scope:** Integration with Google Fact Check API, fine-tuned BERT/RoBERTa transformers, and multi-modal image verification.
-        """)
